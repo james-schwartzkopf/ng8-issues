@@ -1,27 +1,28 @@
-# Ng8Issues
+# Reproduce issue with IE11 + Ivy + MatPaginator
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.0.
+to run:
+```
+yarn && yarn run start
+open http://127.0.0.1:8080/index.html in IE11
+```
 
-## Development server
+When using IE11 with enableIvy = true, MatPaginator throws the following error unless the classlist.js polyfill is installed.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+```
+"TypeError: Unable to get property 'add' of undefined or null reference
+   at DefaultDomRenderer2.prototype.addClass (http://127.0.0.1:8080/vendor-es5.js:77117:64)
+   at BaseAnimationRenderer.prototype.addClass (http://127.0.0.1:8080/vendor-es5.js:75657:66)
+   at setClass (http://127.0.0.1:8080/vendor-es5.js:34066:54)
+   at renderStylingMap (http://127.0.0.1:8080/vendor-es5.js:34092:13)
+   at renderInitialStyling (http://127.0.0.1:8080/vendor-es5.js:36943:1)
+   at ɵɵelementStart (http://127.0.0.1:8080/vendor-es5.js:42493:1)
+   at MatPaginator_Template (http://127.0.0.1:8080/vendor-es5.js:71662:5)
+   at executeTemplate (http://127.0.0.1:8080/vendor-es5.js:35719:5)
+   at checkView (http://127.0.0.1:8080/vendor-es5.js:36822:5)
+   at componentRefresh (http://127.0.0.1:8080/vendor-es5.js:36626:5)"
+```
 
-## Code scaffolding
+NOTE: In order to get to this error, I had to rewrite the es5 bundles to remove "use strict"; as a workaround for [@angular/angular #30569](https://github.com/angular/angular/issues/30569)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+I'm not sure if this should be considered a defect or a documentation issue, but the workaround is to install the classlist.js polyfill and 
+add uncomment it in src/polyfill.ts

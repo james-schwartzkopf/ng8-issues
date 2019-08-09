@@ -19,6 +19,7 @@
  */
 
 /** IE10 and IE11 requires the following for NgClass support on SVG elements */
+// TODO uncomment this to fix the mat-paginator issue with IE11
 // import 'classlist.js';  // Run `npm install --save classlist.js`.
 
 /**
