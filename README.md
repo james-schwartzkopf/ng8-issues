@@ -1,27 +1,82 @@
-# Ng8Issues
+Demonstrates an issue with using async pipe (other pipes?) in a library with Ivy enabled.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.0.
+To duplicate clone and run:
 
-## Development server
+```
+cd lib-workspace
+yarn
+ng build test-lib
+cd dist/test-lib
+yarn pack
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+cd ../app-workspace
+yarn cache clean && rm -rf node_modules yarn.lock #only needed if you've changed test-lib
+yarn
+ng serve
 
-## Code scaffolding
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Visit the app-workspace page: http://localhost:4200/ you should see the following errors in the console (even
+ though there were no errors in ng serve):
+```
+core.js:6014 ERROR Error: The pipe 'async' could not be found!
+    at getPipeDef$1 (core.js:35089)
+    at Module.ɵɵpipe (core.js:35055)
+    at TestLibComponent_Template (test-lib.js:32)
+    at executeTemplate (core.js:12177)
+    at checkView (core.js:13615)
+    at componentRefresh (core.js:13359)
+    at refreshChildComponents (core.js:11858)
+    at refreshDescendantViews (core.js:11757)
+    at checkView (core.js:13616)
+    at componentRefresh (core.js:13359)
+defaultErrorLogger	@	core.js:6014
+Promise.then (async)		
+scheduleMicroTask	@	zone-evergreen.js:542
+scheduleTask	@	zone-evergreen.js:381
+scheduleTask	@	zone-evergreen.js:211
+scheduleMicroTask	@	zone-evergreen.js:231
+scheduleResolveOrReject	@	zone-evergreen.js:845
+then	@	zone-evergreen.js:955
+bootstrapModule	@	core.js:40609
+./src/main.ts	@	main.ts:11
+__webpack_require__	@	bootstrap:79
+0	@	main.ts:12
+__webpack_require__	@	bootstrap:79
+checkDeferredModules	@	bootstrap:45
+webpackJsonpCallback	@	bootstrap:32
+(anonymous)	@	main.js:1
+```
 
-## Build
+```
+main.ts:12 Error: The pipe 'async' could not be found!
+    at getPipeDef$1 (core.js:35089)
+    at Module.ɵɵpipe (core.js:35055)
+    at TestLibComponent_Template (test-lib.js:32)
+    at executeTemplate (core.js:12177)
+    at checkView (core.js:13615)
+    at componentRefresh (core.js:13359)
+    at refreshChildComponents (core.js:11858)
+    at refreshDescendantViews (core.js:11757)
+    at checkView (core.js:13616)
+    at componentRefresh (core.js:13359)
+(anonymous)	@	main.ts:12
+Promise.then (async)		
+scheduleMicroTask	@	zone-evergreen.js:542
+scheduleTask	@	zone-evergreen.js:381
+scheduleTask	@	zone-evergreen.js:211
+scheduleMicroTask	@	zone-evergreen.js:231
+scheduleResolveOrReject	@	zone-evergreen.js:845
+then	@	zone-evergreen.js:955
+bootstrapModule	@	core.js:40609
+./src/main.ts	@	main.ts:11
+__webpack_require__	@	bootstrap:79
+0	@	main.ts:12
+__webpack_require__	@	bootstrap:79
+checkDeferredModules	@	bootstrap:45
+webpackJsonpCallback	@	bootstrap:32
+(anonymous)	@	main.js:1
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+NOTE: The same code in the default lib-workspace project works without error, so this appears to be related to
+being a node module somehow.
